@@ -1,3 +1,8 @@
+'''
+This file was mainly created to just implement ideas as is, and test quickly.
+The final product is the package called "ImageSegmenter", which contains the class "Segmenter"
+'''
+
 from PIL import Image
 import numpy as np
 import cv2
@@ -19,7 +24,7 @@ im_gray = cv2.imread('SegmentationTest2.png', 0)
 im_gray = cv2.medianBlur(im_gray, 5)
 
 # ret, thresh = cv2.threshold(im_gray, 127, 255, 0)
-# Apply adaptive threshold
+# Apply adaptive threshold with binary_inv
 thresh = cv2.adaptiveThreshold(im_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
 cv2.imshow('thresh', thresh)
