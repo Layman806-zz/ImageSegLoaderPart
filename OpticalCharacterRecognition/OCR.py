@@ -2,7 +2,7 @@
 Minor Project :-
 
 Title : Optical Character Recognition
-Developers : Bavani Sankar A. B. and Tejas Verghese
+Developers : A.B. Bavani Sankar and Tejas Verghese
 
 '''
 
@@ -10,6 +10,10 @@ Developers : Bavani Sankar A. B. and Tejas Verghese
 from PyQt4 import QtCore, QtGui
 import cv2
 from ImageSegmenter import Segmenter as Seg
+import AboutProject
+import AboutDevelopers
+import Predictor as pr
+import numpy as np
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -70,7 +74,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
 
         # Output Text Area
         self.textBrowser = QtGui.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(4, 250, 632, 200))
+        self.textBrowser.setGeometry(QtCore.QRect(5, 250, 630, 200))
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
 
         # Empty Label for Input Image
@@ -115,10 +119,12 @@ class Ui_MainWindow(QtGui.QMainWindow):
         # About -> About Developers Option setup
         self.actionAbout_Developers = QtGui.QAction(MainWindow)
         self.actionAbout_Developers.setObjectName(_fromUtf8("actionAbout_Developers"))
+        self.actionAbout_Developers.triggered.connect(AboutDevelopers.aboutTheDevelopers)
 
         # About -> About Software Option setup
         self.actionAbout_Software = QtGui.QAction(MainWindow)
         self.actionAbout_Software.setObjectName(_fromUtf8("actionAbout_Software"))
+        self.actionAbout_Software.triggered.connect(AboutProject.aboutTheProject)
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -156,7 +162,6 @@ class Ui_MainWindow(QtGui.QMainWindow):
             And then a preview is created for that image,
             while the image is given as input to scanFunction().
         '''
-
         fileDialog = QtGui.QFileDialog()
         self.pic = fileDialog.getOpenFileName()
         pixmap = QtGui.QPixmap(self.pic)
@@ -197,20 +202,15 @@ class Ui_MainWindow(QtGui.QMainWindow):
             This Function will display the segments of image data.
             This is a temporary activity. 
         '''
-
-        # self.textBrowser.append("Hello World!")
-        # imLoad = ImgLoad()
-        # img = self.selectWindow()
-        # imLoad.ImgFunction(self.pic)
-
         # Using Segmenter.py file
         S = Seg.Segmenter(self.pic)
         segments = S.segment()
-
+        p = []
         for s in segments:
-            cv2.imshow('segment', s)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            cv2.imwrite('color_img.png', s)
+            img = cv2.imread('color_img.png')
+            p.append(pr.predict(img))
+        self.textBrowser.append(str(p))
 
 
     def closeApplication(self):
